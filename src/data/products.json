@@ -1,0 +1,75 @@
+[
+  {
+    "id": 1,
+    "title": "Teclado",
+    "description": "Descripción del producto de ejemplo",
+    "price": 100.6,
+    "category": "Perifericos",
+    "code": "PROD1234",
+    "stock": 10,
+    "thumbnails": [
+      "https://ejemplo.com/thumbnail1.jpg",
+      "https://ejemplo.com/thumbnail2.jpg"
+    ],
+    "status": true
+  },
+  {
+    "id": 2,
+    "title": "Mouse",
+    "description": "Descripción del producto de ejemplo",
+    "price": 15.5,
+    "category": "Perifericos",
+    "code": "PROD123",
+    "stock": 15,
+    "thumbnails": [
+      "https://ejemplo.com/thumbnail1.jpg"
+    ],
+    "status": true
+  },
+  {
+    "id": 3,
+    "title": "Medias",
+    "description": "Descripción del producto de ejemplo",
+    "price": 10.5,
+    "category": "Ropa",
+    "code": "PROD1235",
+    "stock": 15,
+    "thumbnails": [
+      "https://ejemplo.com/thumbnail1.jpg"
+    ],
+    "status": true
+  },
+  {
+    "id": 4,
+    "title": "Medias",
+    "description": "Descripción del producto de ejemplo",
+    "price": 12.5,
+    "category": "Ropa",
+    "code": "PROD1236",
+    "stock": 10,
+    "status": true
+  },
+  {
+    "id": 5,
+    "title": "Televisor LG",
+    "description": "Descripción del producto de ejemplo",
+    "price": 13000,
+    "category": "Electronica",
+    "code": "PROD1238",
+    "stock": 5,
+    "status": true
+  },
+  {
+    "id": 6,
+    "title": "Televisor",
+    "description": "Descripción del producto de ejemplo",
+    "price": 10000,
+    "thumbnails": [
+      "https://ejemplo.com/thumbnail1.jpg"
+    ],
+    "category": "Electronica",
+    "code": "PROD1239",
+    "stock": 5,
+    "status": true
+  }
+]
