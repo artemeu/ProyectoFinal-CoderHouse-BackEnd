@@ -1,7 +1,7 @@
 import { Router } from "express";
 import CartManager from "../Class/cartManager.js";
 import ProductManager from "../Class/productManager.js";
-import { __dirname } from "../utils.js";
+import { __dirname } from "../utils/utils.js";
 
 const router = Router();
 const cartManager = new CartManager(`${__dirname}/data/carts.json`);
