@@ -1,3 +1,5 @@
+# Proyecto Final - CoderHouse - Backend
+
 ## Instalacion
 
 1. Clona este repositorio en tu máquina local:
@@ -55,3 +57,17 @@ Para poder utilizar cada uno de los metodos es necesario que el producto tenga l
 | GET    | http://localhost:8080/api/carts/172           | Solicitar el carrito segun su id espesifico                          |
 | POST   | http://localhost:8080/api/carts               | Crea un carrito con su id especifico                                 |
 | POST   | http://localhost:8080/api/carts/172/product/4 | Agrega un producto especifico con su id al carrito que tiene otro id |
+
+### Visualización de Productos
+
+Para ver la lista de productos, accede a:
+
+| Metodo | Endpoint               | Descripcion                                       |
+| ------ | ---------------------- | ------------------------------------------------- |
+| GET    | http://localhost:8080/ | Renderiza la vista home con la lista de productos |
+
+Para ver la lista de productos en tiempo real y agregar o eliminar productos, accede a:
+
+| Metodo | Endpoint                               | Descripcion                                                                  |
+| ------ | -------------------------------------- | ---------------------------------------------------------------------------- |
+| GET    | http://localhost:8080/realtimeproducts | Renderiza la vista realTimeProducts con la lista de productos en tiempo real |
