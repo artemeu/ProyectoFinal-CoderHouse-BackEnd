@@ -14,6 +14,16 @@ async function emitProducts(io) {
     }
 }
 
+// Función para emitir productos a un cliente
+async function socketProducts(socket) {
+    try {
+        const products = await productManager.getProducts();
+        socket.emit('getProducts', products);
+    } catch (error) {
+        console.error('Error al emitir productos:', error);
+    }
+}
+
 // Función principal para configurar WebSocket
 function webSocket(httpServer) {
     const io = new Server(httpServer);
@@ -21,7 +31,12 @@ function webSocket(httpServer) {
     io.on('connection', (socket) => {
         console.log('Nuevo cliente conectado');
 
-        // Enviar la lista de productos a los nuevos clientes
+        // Enviar la lista de productos a los nuevos clientes que lo soliciten
+        socket.on('requestProducts', () => {
+            socketProducts(socket);
+        });
+
+        // Enviar la lista de productos a todos los clientes en tiempo real
         emitProducts(io);
 
         // Añadir un nuevo producto
