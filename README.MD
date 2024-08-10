@@ -71,3 +71,13 @@ Para ver la lista de productos en tiempo real y agregar o eliminar productos, ac
 | Metodo | Endpoint                               | Descripcion                                                                  |
 | ------ | -------------------------------------- | ---------------------------------------------------------------------------- |
 | GET    | http://localhost:8080/realtimeproducts | Renderiza la vista realTimeProducts con la lista de productos en tiempo real |
+
+### Visualización de Productos en MongoDB
+
+Para vizualizar los productos que se encuentran en la base de datos:
+
+| Metodo | Endpoint                                 | Descripcion                                            |
+| ------ | ---------------------------------------- | ------------------------------------------------------ |
+| GET    | http://localhost:8080/products           | Renderiza la vista de productos                        |
+| GET    | http://localhost:8080/products/172371263 | Renderiza la vista del producto especificado con el id |
+| GET    | http://localhost:8080/carts/123124       | Renderiza la vista del carrito segun el id             |
