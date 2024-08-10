@@ -71,5 +71,14 @@
     "code": "PROD1239",
     "stock": 5,
     "status": true
+  },
+  {
+    "id": 7,
+    "title": "Notbook",
+    "description": "Dell inspiron",
+    "price": "1000000",
+    "category": "Electronica",
+    "code": "ER123",
+    "stock": "20"
   }
 ]
