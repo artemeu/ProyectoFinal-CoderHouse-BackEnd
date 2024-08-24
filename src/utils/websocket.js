@@ -40,12 +40,18 @@ function webSocket(httpServer) {
         emitProducts(io);
 
         // Añadir un nuevo producto
-        socket.on('addProduct', async (productData) => {
+        socket.on('addProduct', async (productData, callback) => {
             try {
-                await productManager.addProduct(productData);
-                emitProducts(io);
+                const result = await productManager.addProduct(productData);
+                // Envía la respuesta al cliente
+                callback(result);
+                // Emitir productos a todos los clientes
+                if (!result.error) {
+                    emitProducts(io);
+                }
             } catch (error) {
                 console.error('Error al agregar producto:', error);
+                callback({ error: 'Error interno del servidor' }); // Respuesta en caso de error
             }
         });
 

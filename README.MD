@@ -81,3 +81,9 @@ Para vizualizar los productos que se encuentran en la base de datos:
 | GET    | http://localhost:8080/products           | Renderiza la vista de productos                        |
 | GET    | http://localhost:8080/products/172371263 | Renderiza la vista del producto especificado con el id |
 | GET    | http://localhost:8080/carts/123124       | Renderiza la vista del carrito segun el id             |
+
+### Variables de entorno
+
+PORT=8080
+
+MONGODB_URI=mongodb+srv://artemeu1:fbvjSFu91cXHPgUC@coderback.0uqebpv.mongodb.net/?retryWrites=true&w=majority&appName=CoderBack

@@ -42,8 +42,20 @@ class ProductManager {
     // Método para agregar un nuevo producto
     async addProduct(productData) {
         const { title, description, price, category, code, stock } = productData;
-        if (!title || !description || !price || !category || !code || !stock) {  // || !thumbnails || !Array.isArray(thumbnails)
+        if (!title || !description || price === undefined || !category || !code || stock === undefined) {  // || !thumbnails || !Array.isArray(thumbnails)
             return { error: 'Todos los campos son obligatorios' };
+        }
+        // Convertir price y stock a números antes de validarlos
+        const parsedPrice = parseFloat(price);
+        const parsedStock = parseInt(stock, 10);
+
+        // Validación de precio y stock negativos
+        if (isNaN(parsedPrice) || parsedPrice < 0) {
+            return { error: 'El precio no puede ser negativo o es inválido' };
+        }
+
+        if (isNaN(parsedStock) || parsedStock < 0) {
+            return { error: 'El stock no puede ser negativo o es inválido' };
         }
         await this.loadData();
         if (this.products.some(p => p.code === code)) {

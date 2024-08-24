@@ -37,15 +37,26 @@ addProductForm.addEventListener('submit', (e) => {
             allowEscapeKey: false, // Desactiva el cierre al presionar la tecla Esc
         });
     } else {
-        socket.emit('addProduct', newProduct);
-        addProductForm.reset();
-
-        Swal.fire({
-            icon: 'success',
-            title: 'Producto agregado',
-            text: `El producto "${newProduct.title}" ha sido agregado exitosamente.`,
-            allowOutsideClick: false, // Desactiva el cierre al hacer clic fuera
-            allowEscapeKey: false, // Desactiva el cierre al presionar la tecla Esc
+        socket.emit('addProduct', newProduct, (response) => {
+            // `response` es la respuesta del servidor
+            if (response.error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al agregar producto',
+                    text: response.error,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                });
+            } else {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Producto agregado',
+                    text: `El producto "${response.title}" ha sido agregado exitosamente.`,
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                });
+                addProductForm.reset();
+            }
         });
     }
 });
