@@ -86,4 +86,5 @@ Para vizualizar los productos que se encuentran en la base de datos:
 ###Variables de entorno
 
 PORT=8080
+
 MONGODB_URI=mongodb+srv://artemeu1:fbvjSFu91cXHPgUC@coderback.0uqebpv.mongodb.net/?retryWrites=true&w=majority&appName=CoderBack
