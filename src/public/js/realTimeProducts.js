@@ -89,7 +89,7 @@ socket.on('updateProducts', (products) => {
               <p>${product.description}</p>
               <p>${product.category}</p>
               <p class="price">Precio: $${product.price}</p>
-               <button class="delete-btn" data-id="${product.id}" data-name="${product.title}">Eliminar</button>
+              <button class="delete-btn" data-id="${product.id}" data-name="${product.title}">Eliminar</button>
             </div>
         `;
     });

@@ -25,8 +25,7 @@ class CartManager {
     // Método para crear un nuevo carrito
     async createCart() {
         try {
-            const newCart = new Cart({ products: [] });
-            await newCart.save();
+            const newCart = await Cart.create({ products: [] });
             return newCart;
         } catch (error) {
             return { error: `Error al crear el carrito: ${error.message}` };

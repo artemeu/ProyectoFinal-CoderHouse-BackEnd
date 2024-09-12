@@ -27,16 +27,12 @@ class ProductManager {
     // Método para agregar un nuevo producto
     async addProduct(productData) {
         const { title, description, price, category, code, stock } = productData;
-        // Validar campos obligatorios
-        if (!title || !description || price === undefined || !category || !code || !stock) {
-            return { error: 'Todos los campos son obligatorios' };
+        // Validar campos obligatorios y valores válidos
+        if ([title, description, price, category, code, stock].some(field => !field && field !== 0)) {
+            return { error: 'Todos los campos son obligatorios y deben ser válidos' };
         }
-        // Validar precio y stock
-        if (price <= 0) {
-            return { error: 'El precio debe ser mayor que 0' };
-        }
-        if (stock < 0) {
-            return { error: 'El stock no puede ser menor que 0' };
+        if (price <= 0 || stock < 0) {
+            return { error: 'El precio debe ser mayor que 0 y el stock no puede ser negativo' };
         }
         try {
             // Verificar si ya existe un producto con el mismo código
@@ -44,8 +40,7 @@ class ProductManager {
             if (existingProduct) {
                 return { error: `Ya existe un producto con el código '${code}'` };
             }
-            const newProduct = new Product(productData);
-            await newProduct.save();
+            const newProduct = await Product.create(productData);
             return newProduct;
         } catch (error) {
             return { error: `Error al agregar el producto: ${error.message}` };
@@ -57,11 +52,8 @@ class ProductManager {
         try {
             // Validar campos obligatorios si se están actualizando
             const { price, stock } = updatedProductData;
-            if (price <= 0) {
-                return { error: 'El precio debe ser mayor que 0' };
-            }
-            if (stock < 0) {
-                return { error: 'El stock no puede ser menor que 0' };
+            if (price <= 0 || stock < 0) {
+                return { error: 'El precio debe ser mayor que 0 y el stock no puede ser negativo' };
             }
             const updatedProduct = await Product.findByIdAndUpdate(
                 productId,
