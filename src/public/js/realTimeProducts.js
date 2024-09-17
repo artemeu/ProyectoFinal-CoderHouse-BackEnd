@@ -38,7 +38,6 @@ addProductForm.addEventListener('submit', (e) => {
         });
     } else {
         socket.emit('addProduct', newProduct, (response) => {
-            // `response` es la respuesta del servidor
             if (response.error) {
                 Swal.fire({
                     icon: 'error',
@@ -73,8 +72,8 @@ productList.addEventListener('click', (e) => {
             icon: 'success',
             title: 'Producto Eliminado',
             text: `El producto "${productName}" ha sido eliminado.`,
-            allowOutsideClick: false, // Desactiva el cierre al hacer clic fuera
-            allowEscapeKey: false, // Desactiva el cierre al presionar la tecla Esc
+            allowOutsideClick: false,
+            allowEscapeKey: false,
         });
     }
 });

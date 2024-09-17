@@ -11,40 +11,27 @@ function clearCart(cartId) {
         })
         .then(data => {
             if (data.status === 'success') {
-                alert('Carrito vacío exitosamente');
-                location.reload(); // Recargar la página para reflejar los cambios
+                Toastify({
+                    text: "Carrito vacío exitosamente",
+                    duration: 3000,
+                    backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)"
+                }).showToast();
+                setTimeout(() => location.reload(), 3000);
             } else {
-                alert('Error al vaciar el carrito');
+                Toastify({
+                    text: "Error al vaciar el carrito",
+                    duration: 3000,
+                    backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)"
+                }).showToast();
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Hubo un problema al vaciar el carrito');
-        });
-}
-
-// Función para eliminar el carrito
-function deleteCart(cartId) {
-    fetch(`/api/carts/${cartId}/empty`, {
-        method: 'DELETE',
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error en la respuesta del servidor');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.status === 'success') {
-                alert('Carrito eliminado exitosamente');
-                window.location.href = '/products'; // Redirige a la página principal
-            } else {
-                alert('Error al eliminar el carrito');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Hubo un problema al eliminar el carrito');
+            Toastify({
+                text: "Hubo un problema al vaciar el carrito",
+                duration: 3000,
+                backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)"
+            }).showToast();
         });
 }
 
@@ -61,14 +48,26 @@ function removeProduct(cartId, productId) {
         })
         .then(data => {
             if (data.status === 'success') {
-                alert('Producto eliminado exitosamente');
-                location.reload();
+                Toastify({
+                    text: "Producto eliminado exitosamente",
+                    duration: 3000,
+                    backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)"
+                }).showToast();
+                setTimeout(() => location.reload(), 3000);
             } else {
-                alert('Error al eliminar el producto');
+                Toastify({
+                    text: "Error al eliminar el producto",
+                    duration: 3000,
+                    backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)"
+                }).showToast();
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Hubo un problema al eliminar el producto');
+            Toastify({
+                text: "Hubo un problema al eliminar el producto",
+                duration: 3000,
+                backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)"
+            }).showToast();
         });
 }

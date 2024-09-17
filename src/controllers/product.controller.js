@@ -25,9 +25,8 @@ export const getProducts = async (req, res) => {
         };
         // Obtener productos con paginación, filtros y ordenamiento
         const result = await productManager.getProducts({ filter, options });
-        res.json({
-            status: 'success',
-            payload: result.docs,
+        res.success({
+            products: result.docs,
             totalPages: result.totalPages,
             prevPage: result.prevPage,
             nextPage: result.nextPage,
@@ -38,7 +37,7 @@ export const getProducts = async (req, res) => {
             nextLink: result.nextPage ? `/products?limit=${limit}&page=${result.nextPage}${sort ? `&sort=${sort}` : ''}` : null
         });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.errorServer(error.message);
     }
 }
 
@@ -47,11 +46,11 @@ export const getProductById = async (req, res) => {
     try {
         const product = await productManager.getProductById(productId);
         if (product.error) {
-            return res.status(404).json(product);
+            return res.notFound(product.error);
         }
-        res.json(product);
+        res.success(product);
     } catch (error) {
-        res.status(404).json({ error: error.message });
+        res.errorServer(error.message);
     }
 }
 
@@ -60,11 +59,11 @@ export const createProduct = async (req, res) => {
         const newProductData = { ...req.body };
         const newProduct = await productManager.addProduct(newProductData);
         if (newProduct.error) {
-            return res.status(400).json({ error: newProduct.error });
+            return res.badRequest(newProduct.error);
         }
-        res.status(201).json(newProduct);
+        res.success(newProduct);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.errorServer(error.message);
     }
 }
 
@@ -74,11 +73,14 @@ export const updateProduct = async (req, res) => {
     try {
         const updatedProduct = await productManager.updateProduct(productId, updatedProductData);
         if (updatedProduct.error) {
-            return res.status(404).json(updatedProduct);
+            return res.notFound(updatedProduct.error);
         }
-        res.json({ message: `Producto con ID ${productId} actualizado correctamente`, updatedProduct });
+        res.success({
+            message: `Producto con ID ${productId} actualizado correctamente`,
+            payload: updatedProduct
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.errorServer(error.message);
     }
 }
 
@@ -87,10 +89,10 @@ export const deleteProduct = async (req, res) => {
     try {
         const result = await productManager.deleteProduct(productId);
         if (result.error) {
-            return res.status(404).json(result);
+            return res.notFound(result.error);
         }
-        res.json(result);
+        res.success(result);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.errorServer(error.message);
     }
 }

@@ -1,3 +1,14 @@
+<header></header>
+  <div class="header-content">
+    {{#if currentUser}}
+      <p class="welcome-message">Bienvenido, {{currentUser.first_name}}!</p>
+      <a href="/logout" class="btn logout-btn">Cerrar Sesión</a>
+    {{else}}
+      <a href="/login" class="btn login-btn">Iniciar Sesión</a>
+      <a href="/register" class="btn register-btn">Registrarse</a>
+    {{/if}}
+  </div>
+</header>
 <h1>Detalles del Carrito</h1>
 <div id="cart-details">
   {{#if cart.products.length}}
@@ -18,8 +29,6 @@
 
 <div class="cart-actions">
   <button id="clear-cart-btn" onclick="clearCart('{{cart._id}}')">Vaciar Carrito</button>
-  <button id="delete-cart-btn" onclick="deleteCart('{{cart._id}}')">Eliminar
-    Carrito</button>
 </div>
 
 <a href="/products" class="back-link">Volver a la página principal</a>

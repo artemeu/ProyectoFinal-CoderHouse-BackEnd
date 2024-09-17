@@ -103,8 +103,92 @@ form button {
   font-size: 16px;
   cursor: pointer;
   width: 100%;
+  margin-top: 10px;
 }
 
 form button:hover {
   background: #2980b9;
+}
+
+header {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.welcome-message {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #a78c28;
+}
+
+.btn {
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  color: #fff;
+  font-weight: bold;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+}
+
+.login-btn {
+  background-color: #007bff;
+}
+
+.login-btn:hover {
+  background-color: #0056b3;
+}
+
+.logout-btn {
+  background-color: #dc3545;
+}
+
+.logout-btn:hover {
+  background-color: #c82333;
+}
+
+.register-btn {
+  background-color: #28a745;
+}
+
+.register-btn:hover {
+  background-color: #218838;
+}
+
+.forgot-password-link {
+  display: block;
+  text-align: right;
+  color: #007bff;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.forgot-password-link:hover {
+  text-decoration: underline;
+}
+
+.cart-btn {
+  background-color: #17a2b8;
+  color: #fff;
+}
+
+.cart-btn:hover {
+  background-color: #138496;
+}
+
+.cart-btn:active {
+  background-color: #117a8b;
+}
+
+.cart-btn i {
+  margin-right: 5px;
+  font-size: 1rem;
 }

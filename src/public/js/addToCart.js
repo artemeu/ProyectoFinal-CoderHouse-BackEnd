@@ -1,25 +1,52 @@
 function addToCart(productId) {
-    // Crea un carrito nuevo 
-    fetch('/api/carts', { method: 'POST' })
-        .then(response => response.json())
-        .then(cartData => {
-            if (cartData.error) {
-                console.error('Error al crear el carrito:', cartData.error);
-                alert('Error al crear el carrito');
-                return;
+    fetch('/api/sessions/current', { method: 'GET' })
+        .then(response => {
+            if (!response.ok) {
+                if (response.status === 401) {
+                    window.location.href = '/login';
+                }
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
-            const cartId = cartData._id;
-            // Agregar el producto al carrito recién creado
-            return fetch(`/api/carts/${cartId}/products/${productId}`, { method: 'POST' });
+            return response.json();
         })
-        .then(response => response.json())
+        .then(userData => {
+            if (userData && userData.payload && userData.payload.user) {
+                const cartId = userData.payload.user.cart;
+                if (!cartId) {
+                    throw new Error('No se encontró un carrito asociado al usuario.');
+                }
+                return fetch(`/api/carts/${cartId}/products/${productId}`, { method: 'POST' });
+            } else {
+                throw new Error('No se pudo obtener la información del usuario.');
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.error) {
-                console.error('Error al agregar el producto al carrito:', data.error);
-                alert('Error al agregar el producto al carrito');
+                Toastify({
+                    text: 'Error al agregar el producto al carrito',
+                    duration: 3000,
+                    backgroundColor: 'linear-gradient(to right, #ff5f6d, #ffc371)',
+                }).showToast();
             } else {
-                alert('Producto agregado al carrito. ID del carrito: ' + data._id);
+                Toastify({
+                    text: 'Producto agregado al carrito.',
+                    duration: 3000,
+                    backgroundColor: 'linear-gradient(to right, #00b09b, #96c93d)',
+                }).showToast();
             }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => {
+            console.error('Error:', error);
+            Toastify({
+                text: 'Hubo un problema al agregar el producto al carrito',
+                duration: 3000,
+                backgroundColor: 'linear-gradient(to right, #ff5f6d, #ffc371)',
+            }).showToast();
+        });
 }

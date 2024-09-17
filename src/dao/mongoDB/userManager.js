@@ -14,7 +14,7 @@ class UserManager {
     // Metodo para obtener todos los usuarios
     async getAllUsers() {
         try {
-            const users = await User.find();
+            const users = await User.find().populate('cart');
             return users;
         } catch (error) {
             return { error: `Error al obtener los usuarios: ${error.message}` };

@@ -1,3 +1,17 @@
+<header>
+  <div class="header-content">
+    {{#if currentUser}}
+      <p class="welcome-message">Bienvenido, {{currentUser.first_name}}!</p>
+      <a href="/carts/{{currentUser.cart}}" class="btn cart-btn">
+        <i class="fas fa-shopping-cart"></i>
+        Ver Carrito
+      </a>
+      <a href="/logout" class="btn logout-btn">Cerrar Sesión</a>
+    {{else}}
+      <a href="/login" class="btn login-btn">Iniciar Sesión</a>
+    {{/if}}
+  </div>
+</header>
 <div class="product-detail">
   <h1>{{product.title}}</h1>
   <p>{{product.description}}</p>
