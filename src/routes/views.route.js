@@ -13,7 +13,7 @@ class ViewsRouter extends CustomRouter {
         this.get('/forgotpass', forgotPass);
         this.get('/products', userPassport('current'), getProductsMDB);
         this.get('/products/:pid', userPassport('current'), productDetail);
-        this.get('/carts/:cid', invokePassport('current'), userPassport('current'), cartDetail);
+        this.get('/carts/:cid', invokePassport('current'), cartDetail);
     }
 }
 
