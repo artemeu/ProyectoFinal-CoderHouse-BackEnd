@@ -1,6 +1,6 @@
-import ProductManager from "../dao/mongoDB/productManager.js";
+import ProductRepository from "../repositories/productRepository.js";
 
-const productManager = new ProductManager();
+const productRepository = new ProductRepository();
 
 export const getProducts = async (req, res) => {
     try {
@@ -21,10 +21,10 @@ export const getProducts = async (req, res) => {
             page: pageNum,
             limit: limitNum,
             sort: sortOption,
-            lean: true // Para obtener un objeto plano en lugar de un documento Mongoose
+            lean: true
         };
         // Obtener productos con paginación, filtros y ordenamiento
-        const result = await productManager.getProducts({ filter, options });
+        const result = await productRepository.getProducts({ filter, options });
         res.success({
             products: result.docs,
             totalPages: result.totalPages,
@@ -44,7 +44,7 @@ export const getProducts = async (req, res) => {
 export const getProductById = async (req, res) => {
     const productId = req.params.pid;
     try {
-        const product = await productManager.getProductById(productId);
+        const product = await productRepository.getById(productId);
         if (product.error) {
             return res.notFound(product.error);
         }
@@ -57,7 +57,7 @@ export const getProductById = async (req, res) => {
 export const createProduct = async (req, res) => {
     try {
         const newProductData = { ...req.body };
-        const newProduct = await productManager.addProduct(newProductData);
+        const newProduct = await productRepository.create(newProductData);
         if (newProduct.error) {
             return res.badRequest(newProduct.error);
         }
@@ -71,7 +71,7 @@ export const updateProduct = async (req, res) => {
     const productId = req.params.pid;
     const updatedProductData = req.body;
     try {
-        const updatedProduct = await productManager.updateProduct(productId, updatedProductData);
+        const updatedProduct = await productRepository.update(productId, updatedProductData);
         if (updatedProduct.error) {
             return res.notFound(updatedProduct.error);
         }
@@ -87,7 +87,7 @@ export const updateProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
     const productId = req.params.pid;
     try {
-        const result = await productManager.deleteProduct(productId);
+        const result = await productRepository.delete(productId);
         if (result.error) {
             return res.notFound(result.error);
         }

@@ -26,7 +26,7 @@ document.getElementById('login-form').addEventListener('submit', function (event
                 }, 3000);
             } else {
                 Toastify({
-                    text: result.payload.message || "Error al iniciar sesión!",
+                    text: result.error || result.payload.message || "Error al iniciar sesión!",
                     duration: 3000,
                     backgroundColor: "linear-gradient(to right, #ff5f6d, #ffc371)"
                 }).showToast();

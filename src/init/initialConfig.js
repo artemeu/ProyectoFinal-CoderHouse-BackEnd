@@ -3,14 +3,14 @@ import dotenv from 'dotenv';
 import router from '../routes/index.js';
 import { create } from 'express-handlebars';
 import { __dirname } from '../utils/utils.js';
-import { connectToDB } from "../dao/connectDB/connection.js";
+import ConnectToDB from "../dao/connectDB/connection.js";
 import cookieParser from "cookie-parser";
 import initializePassport from "../passport/jwt.passport.js";
 import passport from "passport";
 
-export const AppInit = (app) => {
+export const AppInit = async (app) => {
     dotenv.config();
-    connectToDB();
+    await ConnectToDB.getInstance();
     const hbs = create();
 
     // Configuración de Handlebars

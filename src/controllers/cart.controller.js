@@ -1,40 +1,37 @@
-import CartManager from "../dao/mongoDB/cartManager.js";
-import ProductManager from "../dao/mongoDB/productManager.js";
-import UserManager from "../dao/mongoDB/userManager.js";
+import CartRepository from "../repositories/cartRepository.js";
+import ProductRepository from "../repositories/productRepository.js";
+import UserRepository from "../repositories/userRepository.js";
 import { generadorToken } from "../utils/utils.js";
 
-const cartManager = new CartManager();
-const productManager = new ProductManager();
-const userManager = new UserManager();
+const cartRepository = new CartRepository();
+const productRepository = new ProductRepository();
+const userRepository = new UserRepository();
 
 export const getCarts = async (req, res) => {
     try {
-        const carts = await cartManager.getCarts();
+        const carts = await cartRepository.getAll();
         res.success(carts);
     } catch (error) {
-        res.errorServer(error);
+        res.errorServer(error.message);
     }
 }
 
 export const getCartById = async (req, res) => {
     const cartId = req.params.cid;
     try {
-        const cart = await cartManager.getCartById(cartId);
-        if (cart.error) {
-            return res.notFound(cart.error);
-        }
+        const cart = await cartRepository.getById(cartId);
         res.success(cart);
     } catch (error) {
-        res.errorServer(error);
+        res.errorServer(error.message);
     }
 }
 
 export const createCart = async (req, res) => {
     try {
-        const newCart = await cartManager.createCart();
+        const newCart = await cartRepository.create();
         res.success(newCart);
     } catch (error) {
-        res.errorServer(error);
+        res.errorServer(error.message);
     }
 }
 
@@ -42,17 +39,11 @@ export const addProdToCart = async (req, res) => {
     const cartId = req.params.cid;
     const productId = req.params.pid;
     try {
-        const product = await productManager.getProductById(productId);
-        if (product.error) {
-            return res.notFound(product.error);
-        }
-        const updatedCart = await cartManager.addProductToCart(cartId, productId);
-        if (updatedCart.error) {
-            return res.notFound(updatedCart.error);
-        }
+        await productRepository.getById(productId);
+        const updatedCart = await cartRepository.addProductToCart(cartId, productId);
         res.success(updatedCart);
     } catch (error) {
-        res.errorServer(error);
+        res.errorServer(error.message);
     }
 }
 
@@ -60,13 +51,10 @@ export const updateCart = async (req, res) => {
     const cartId = req.params.cid;
     const products = req.body.products;
     try {
-        const result = await cartManager.updateCartProducts(cartId, products);
-        if (result.error) {
-            return res.badRequest(result.error);
-        }
+        const result = await cartRepository.updateCartProducts(cartId, products);
         res.success(result.products);
     } catch (error) {
-        res.errorServer(error);
+        res.errorServer(error.message);
     }
 }
 
@@ -75,31 +63,25 @@ export const updateQProdInCart = async (req, res) => {
     const productId = req.params.pid;
     const { quantity } = req.body;
     try {
-        const result = await cartManager.updateProductQuantity(cartId, productId, quantity);
-        if (result.error) {
-            return res.badRequest(result.error);
-        }
+        const result = await cartRepository.updateProductQuantity(cartId, productId, quantity);
         res.success({
             message: `Cantidad del producto con ID ${productId} actualizada en el carrito con ID ${cartId}`,
             payload: result
         });
     } catch (error) {
-        res.errorServer(error);
+        res.errorServer(error.message);
     }
 }
 
 export const deleteAllProduct = async (req, res) => {
     const cartId = req.params.cid;
     try {
-        const result = await cartManager.clearCart(cartId);
-        if (result.error) {
-            return res.notFound(result.error);
-        }
+        await cartRepository.clearCart(cartId);
         res.success({
             message: `Todos los productos eliminados del carrito con ID ${cartId}`
         });
     } catch (error) {
-        res.errorServer(error);
+        res.errorServer(error.message);
     }
 }
 
@@ -107,49 +89,46 @@ export const deleteProductSelect = async (req, res) => {
     const cartId = req.params.cid;
     const productId = req.params.pid;
     try {
-        const result = await cartManager.removeProductFromCart(cartId, productId);
-        if (result.error) {
-            return res.notFound(result.error);
-        }
+        await cartRepository.removeProductFromCart(cartId, productId);
         res.success({
             message: `Producto con ID ${productId} eliminado del carrito con ID ${cartId}`
         });
     } catch (error) {
-        res.errorServer(error);
+        res.errorServer(error.message);
     }
 }
 
 export const deleteCart = async (req, res) => {
     const cartId = req.params.cid;
+    if (!req.user) return res.unauthorized('No autenticado');
     try {
-        const cart = await cartManager.getCartById(cartId);
-        if (!cart) {
-            return res.notFound(`Carrito con ID ${cartId} no encontrado.`);
+        const cart = await cartRepository.getById(cartId);
+        if (!cart) return res.notFound(`Carrito con ID ${cartId} no encontrado.`);
+        await cartRepository.delete(cartId);
+        const userId = req.user.id;
+        const user = await userRepository.getById(userId);
+        // Si el carrito eliminado es el del usuario autenticado, actualiza el carrito del usuario a null
+        if (user?.cart === cartId) {
+            await userRepository.update(userId, { cart: null });
+            // Genera un nuevo token sin carrito
+            const token = generadorToken({
+                id: user.id,
+                email: user.email,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                rol: user.rol,
+                cart: null
+            });
+            // Actualiza la cookie con el nuevo token
+            res.cookie('currentUser', token, {
+                maxAge: 24 * 60 * 60 * 1000, // 24 horas
+                signed: true,
+                httpOnly: true
+            });
+            return res.success({ message: `Carrito con ID ${cartId} eliminado y token actualizado` });
         }
-        const result = await cartManager.removeCart(cartId);
-        if (result.error) {
-            return res.notFound(result.error);
-        }
-        if (!req.user) {
-            return res.unauthorized('No autenticado');
-        }
-        const userId = req.user._id;
-        await userManager.updateUser(userId, { cart: null });
-        const token = generadorToken({
-            email: req.user.email,
-            first_name: req.user.first_name,
-            last_name: req.user.last_name,
-            rol: req.user.rol,
-            cart: null
-        });
-        return res.success({
-            message: `Carrito con ID ${cartId} eliminado y token actualizado`
-        }).cookie('currentUser', token, {
-            maxAge: 24 * 60 * 60 * 1000,
-            signed: true,
-            httpOnly: true
-        });
+        return res.success({ message: `Carrito con ID ${cartId} eliminado` });
     } catch (error) {
-        res.errorServer(error);
+        return res.errorServer(error.message);
     }
 };

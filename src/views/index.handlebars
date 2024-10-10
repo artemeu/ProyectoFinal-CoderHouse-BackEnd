@@ -22,10 +22,10 @@
       <p class="price">Precio: ${{this.price}}</p>
       <p>Categoría: {{this.category}}</p>
       <div class="product-actions">
-        <a href="/products/{{this._id}}" class="details-btn">Ver Detalles</a>
+        <a href="/products/{{this.id}}" class="details-btn">Ver Detalles</a>
         <button
           class="add-to-cart-btn"
-          onclick="addToCart('{{this._id}}')"
+          onclick="addToCart('{{this.id}}')"
         >Agregar al Carrito</button>
       </div>
     </div>

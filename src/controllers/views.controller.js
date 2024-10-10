@@ -1,11 +1,11 @@
 import ProductManagerFS from "../dao/fileSystem/productManager.js";
-import ProductManager from "../dao/mongoDB/productManager.js";
-import CartManager from "../dao/mongoDB/cartManager.js";
+import ProductRepository from "../repositories/productRepository.js";
+import CartRepository from "../repositories/cartRepository.js";
 import { __dirname } from "../utils/utils.js";
 
 const productManagerFS = new ProductManagerFS(`${__dirname}/data/products.json`);
-const productManager = new ProductManager();
-const cartManager = new CartManager();
+const productRepository = new ProductRepository();
+const cartRepository = new CartRepository();
 
 export const getProductsFs = async (req, res) => {
     try {
@@ -44,7 +44,7 @@ export const getProductsMDB = async (req, res) => {
             sort: sortOption,
             lean: true
         };
-        const result = await productManager.getProducts({ filter, options });
+        const result = await productRepository.getProducts({ filter, options });
         const currentUser = req.user ? req.user : null;
         res.render('index', {
             title: 'Lista de Productos',
@@ -68,13 +68,10 @@ export const getProductsMDB = async (req, res) => {
 export const productDetail = async (req, res) => {
     const productId = req.params.pid;
     try {
-        const product = await productManager.getProductById(productId);
-        if (product.error) {
-            return res.status(404).json({ error: product.error });
-        }
+        const product = await productRepository.getById(productId);
         // Crear una copia plana del producto
         const cleanProduct = {
-            _id: product._id.toString(),
+            id: product.id.toString(),
             title: product.title,
             description: product.description,
             price: product.price,
@@ -97,25 +94,22 @@ export const productDetail = async (req, res) => {
 export const cartDetail = async (req, res) => {
     const cartId = req.params.cid;
     try {
-        const cart = await cartManager.getCartById(cartId);
-        if (cart.error) {
-            return res.status(404).json({ error: cart.error });
-        }
+        const cart = await cartRepository.getById(cartId);
         // Crear una copia plana del carrito
         const cleanCart = {
-            _id: cart._id.toString(),
+            id: cart.id.toString(),
             products: cart.products.map(p => ({
                 product: {
-                    _id: p.product._id.toString(),
-                    title: p.product.title,
-                    price: p.product.price
+                    id: p.productId.toString(),
+                    title: p.title,
+                    price: p.price
                 },
                 quantity: p.quantity
             }))
         };
         const currentUser = req.user ? req.user : null;
         res.render('cartDetails', {
-            title: `Detalles del Carrito`,
+            title: 'Detalles del Carrito',
             cart: cleanCart,
             currentUser,
             css: '/css/cart.css'
@@ -124,6 +118,7 @@ export const cartDetail = async (req, res) => {
         res.errorServer(error.message);
     }
 }
+
 
 export const userLogin = async (req, res) => {
     res.render('login', { title: "Login" });

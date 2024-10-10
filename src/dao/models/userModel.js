@@ -5,20 +5,20 @@ const userCollection = 'users';
 const userShema = new mongoose.Schema({
     first_name: {
         type: String,
-        require: true,
+        required: true,
     },
     last_name: {
         type: String,
-        require: true,
+        required: true,
     },
     email: {
         type: String,
-        require: true,
+        required: true,
         unique: true
     },
     age: {
         type: Number,
-        require: true
+        required: true
     },
     rol: {
         type: String,
@@ -26,7 +26,7 @@ const userShema = new mongoose.Schema({
     },
     password: {
         type: String,
-        require: true
+        required: true
     },
     cart: {
         type: mongoose.Schema.Types.ObjectId,

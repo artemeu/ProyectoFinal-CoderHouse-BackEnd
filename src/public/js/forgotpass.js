@@ -5,7 +5,7 @@ document.getElementById('forgot-password-form').addEventListener('submit', funct
     const data = new URLSearchParams(formData);
 
     fetch('/api/sessions/forgotpass', {
-        method: 'POST',
+        method: 'PUT',
         body: data,
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'

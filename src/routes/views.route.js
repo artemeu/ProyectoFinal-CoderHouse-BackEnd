@@ -1,19 +1,19 @@
 import CustomRouter from "./customRouter.js";
-import { cartDetail, forgotPass, getProductsFs, getProductsMDB, getProductsRT, productDetail, userLogin, userLogout, userRegister } from "../controllers/views.controller.js";
-import { invokePassport, userPassport } from "../middlewares/authJWT.js";
+import * as ViewsController from "../controllers/views.controller.js";
+import { userPassport } from "../middlewares/authJWT.js";
 
 
 class ViewsRouter extends CustomRouter {
     init() {
-        this.get('/', getProductsFs);
-        this.get('/login', userLogin);
-        this.get('/logout', userLogout);
-        this.get('/register', userRegister);
-        this.get('/realtimeproducts', getProductsRT);
-        this.get('/forgotpass', forgotPass);
-        this.get('/products', userPassport('current'), getProductsMDB);
-        this.get('/products/:pid', userPassport('current'), productDetail);
-        this.get('/carts/:cid', invokePassport('current'), cartDetail);
+        this.get('/', [], ViewsController.getProductsFs);
+        this.get('/realtimeproducts', [], ViewsController.getProductsRT);
+        this.get('/login', [], ViewsController.userLogin);
+        this.get('/logout', [], ViewsController.userLogout);
+        this.get('/register', [], ViewsController.userRegister);
+        this.get('/forgotpass', [], ViewsController.forgotPass);
+        this.get('/products', [], userPassport('current'), ViewsController.getProductsMDB);
+        this.get('/products/:pid', [], ViewsController.productDetail);
+        this.get('/carts/:cid', ['authenticated', 'admin', 'user'], userPassport('current'), ViewsController.cartDetail);
     }
 }
 

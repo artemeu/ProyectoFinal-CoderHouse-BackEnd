@@ -10,7 +10,7 @@ function addToCart(productId) {
             return response.json();
         })
         .then(userData => {
-            if (userData && userData.payload && userData.payload.user) {
+            if (userData?.payload?.user) {
                 const cartId = userData.payload.user.cart;
                 if (!cartId) {
                     throw new Error('No se encontró un carrito asociado al usuario.');

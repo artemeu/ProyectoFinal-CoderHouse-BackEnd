@@ -14,7 +14,10 @@ export const __dirname = resolve(currentDir, '..');
 
 export const createHash = (pass) => bcrypt.hashSync(pass, bcrypt.genSaltSync(10));
 
-export const isValidPassword = (user, pass) => bcrypt.compareSync(pass, user.password);
+export const isValidPassword = (user, pass) => {
+    if (!user || !user.password) return false;
+    return bcrypt.compareSync(pass, user.password);
+};
 
 export const getJWTCookie = (req) => {
     let token = null;

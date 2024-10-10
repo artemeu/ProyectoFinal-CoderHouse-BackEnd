@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { invokePassport } from "../middlewares/authJWT.js";
 
 export default class CustomRouter {
     constructor() {
@@ -12,20 +13,20 @@ export default class CustomRouter {
 
     init() { }
 
-    get(path, ...cb) {
-        this.router.get(path, this.customResponses, this.applyCallbacks(cb));
+    get(path, policies = [], ...cb) {
+        this.router.get(path, this.customResponses, this.handlePolicies(policies), this.applyCallbacks(cb));
     }
 
-    post(path, ...cb) {
-        this.router.post(path, this.customResponses, this.applyCallbacks(cb));
+    post(path, policies = [], ...cb) {
+        this.router.post(path, this.customResponses, this.handlePolicies(policies), this.applyCallbacks(cb));
     }
 
-    put(path, ...cb) {
-        this.router.put(path, this.customResponses, this.applyCallbacks(cb));
+    put(path, policies = [], ...cb) {
+        this.router.put(path, this.customResponses, this.handlePolicies(policies), this.applyCallbacks(cb));
     }
 
-    delete(path, ...cb) {
-        this.router.delete(path, this.customResponses, this.applyCallbacks(cb));
+    delete(path, policies = [], ...cb) {
+        this.router.delete(path, this.customResponses, this.handlePolicies(policies), this.applyCallbacks(cb));
     }
 
     applyCallbacks(cb) {
@@ -48,4 +49,30 @@ export default class CustomRouter {
         res.conflict = error => res.status(409).json({ status: 'conflict', error });
         next();
     }
+
+    handlePolicies(policies) {
+        return async (req, res, next) => {
+            if (policies.length === 0) return next();
+            const isAuthenticated = policies.includes('authenticated');
+            // Si se requiere autenticación, llama a invokePassport
+            if (isAuthenticated) {
+                await invokePassport('current')(req, res, async (err) => {
+                    if (err) return next(err);
+                    return checkPermissions();
+                });
+            } else {
+                return checkPermissions();
+            }
+
+            function checkPermissions() {
+                const userRole = req.user?.rol;
+                const hasPermission = policies.includes(userRole);
+                if (!hasPermission) {
+                    return res.forbidden('No tienes permiso para realizar esta acción');
+                }
+                next();
+            }
+        };
+    }
+
 }
