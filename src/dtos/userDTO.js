@@ -1,4 +1,4 @@
-class UserDTO {
+export default class UserDTO {
     constructor(user, includepassword = false) {
         this.id = user._id;
         this.first_name = user.first_name;
@@ -12,5 +12,3 @@ class UserDTO {
         }
     }
 }
-
-export default UserDTO;

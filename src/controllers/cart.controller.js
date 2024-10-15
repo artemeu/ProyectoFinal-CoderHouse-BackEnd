@@ -1,12 +1,15 @@
 import CartRepository from "../repositories/cartRepository.js";
 import ProductRepository from "../repositories/productRepository.js";
 import UserRepository from "../repositories/userRepository.js";
+import TicketRepository from '../repositories/ticketRepository.js';
 import { generadorToken } from "../utils/utils.js";
 
 const cartRepository = new CartRepository();
 const productRepository = new ProductRepository();
 const userRepository = new UserRepository();
+const ticketRepository = new TicketRepository();
 
+// Obtener los carritos
 export const getCarts = async (req, res) => {
     try {
         const carts = await cartRepository.getAll();
@@ -16,6 +19,7 @@ export const getCarts = async (req, res) => {
     }
 }
 
+// Obtener carrito por id
 export const getCartById = async (req, res) => {
     const cartId = req.params.cid;
     try {
@@ -26,6 +30,7 @@ export const getCartById = async (req, res) => {
     }
 }
 
+// Crear carrito
 export const createCart = async (req, res) => {
     try {
         const newCart = await cartRepository.create();
@@ -35,6 +40,7 @@ export const createCart = async (req, res) => {
     }
 }
 
+// Agregar producto al carrito
 export const addProdToCart = async (req, res) => {
     const cartId = req.params.cid;
     const productId = req.params.pid;
@@ -47,6 +53,7 @@ export const addProdToCart = async (req, res) => {
     }
 }
 
+// Agregar un array de productos al carrito
 export const updateCart = async (req, res) => {
     const cartId = req.params.cid;
     const products = req.body.products;
@@ -58,6 +65,7 @@ export const updateCart = async (req, res) => {
     }
 }
 
+// Actualizar la cantidad del producto en el carrito
 export const updateQProdInCart = async (req, res) => {
     const cartId = req.params.cid;
     const productId = req.params.pid;
@@ -73,6 +81,7 @@ export const updateQProdInCart = async (req, res) => {
     }
 }
 
+// Eliminar todos los productos del carrito
 export const deleteAllProduct = async (req, res) => {
     const cartId = req.params.cid;
     try {
@@ -85,6 +94,7 @@ export const deleteAllProduct = async (req, res) => {
     }
 }
 
+// Eliminar un producto del carrito
 export const deleteProductSelect = async (req, res) => {
     const cartId = req.params.cid;
     const productId = req.params.pid;
@@ -98,6 +108,7 @@ export const deleteProductSelect = async (req, res) => {
     }
 }
 
+// Eliminar el carrito
 export const deleteCart = async (req, res) => {
     const cartId = req.params.cid;
     if (!req.user) return res.unauthorized('No autenticado');
@@ -130,5 +141,56 @@ export const deleteCart = async (req, res) => {
         return res.success({ message: `Carrito con ID ${cartId} eliminado` });
     } catch (error) {
         return res.errorServer(error.message);
+    }
+};
+
+//Finalizar la compra del carrito
+export const purchaseCart = async (req, res) => {
+    const cartId = req.params.cid;
+    const userEmail = req.user.email;
+
+    try {
+        const user = await userRepository.getUserByEmail(userEmail);
+        if (!user || user.cart.toString() !== cartId) {
+            return res.unauthorized('No tienes permiso para procesar este carrito');
+        }
+
+        const cart = await cartRepository.getById(cartId);
+        const itemsToBuy = [];
+        const pendingItems = [];
+
+        // Iterar sobre los productos del carrito
+        for (const item of cart.products) {
+            const product = await productRepository.getById(item.productId);
+            const purchaseQuantity = Math.min(item.quantity, product.stock);
+
+            if (purchaseQuantity > 0) {
+                itemsToBuy.push({ ...item, quantity: purchaseQuantity });
+                await productRepository.update(product.id, { stock: product.stock - purchaseQuantity });
+            }
+            // Solo agregar a pendingItems si hay cantidad restante
+            const remainingQuantity = item.quantity - purchaseQuantity;
+            if (remainingQuantity > 0) {
+                pendingItems.push({ productId: item.productId, quantity: remainingQuantity });
+            }
+        }
+        // Generar ticket si hay productos para comprar
+        if (itemsToBuy.length > 0) {
+            const totalAmount = itemsToBuy.reduce((total, item) => total + item.price * item.quantity, 0);
+            await ticketRepository.create({ amount: totalAmount, purchaser: userEmail, products: itemsToBuy });
+        }
+        // Actualizar el carrito con los productos restantes
+        await cartRepository.update(cartId, {
+            products: pendingItems.map(item => ({
+                product: item.productId,
+                quantity: item.quantity
+            }))
+        });
+        return res.success({
+            message: itemsToBuy.length > 0 ? 'Compra finalizada con éxito' : 'No se pudieron procesar los productos',
+            unavailableProducts: pendingItems
+        });
+    } catch (error) {
+        return res.errorServer('Error al procesar la compra');
     }
 };

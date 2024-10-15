@@ -2,6 +2,7 @@ import ProductRepository from "../repositories/productRepository.js";
 
 const productRepository = new ProductRepository();
 
+// Obtener todos los productos
 export const getProducts = async (req, res) => {
     try {
         const { limit = 10, page = 1, sort = '', query = {} } = req.query;
@@ -41,6 +42,7 @@ export const getProducts = async (req, res) => {
     }
 }
 
+// Obtener producto por id
 export const getProductById = async (req, res) => {
     const productId = req.params.pid;
     try {
@@ -54,6 +56,7 @@ export const getProductById = async (req, res) => {
     }
 }
 
+// Crear un producto
 export const createProduct = async (req, res) => {
     try {
         const newProductData = { ...req.body };
@@ -67,6 +70,7 @@ export const createProduct = async (req, res) => {
     }
 }
 
+// Actualizar el producto
 export const updateProduct = async (req, res) => {
     const productId = req.params.pid;
     const updatedProductData = req.body;
@@ -84,6 +88,7 @@ export const updateProduct = async (req, res) => {
     }
 }
 
+// Eliminar el producto
 export const deleteProduct = async (req, res) => {
     const productId = req.params.pid;
     try {

@@ -5,6 +5,7 @@ import { createHash, generadorToken, isValidPassword } from "../utils/utils.js";
 const userRepository = new UserRepository();
 const cartRepository = new CartRepository();
 
+// Obtener usuarios
 export const getUsers = async (req, res) => {
     try {
         const usersFound = await userRepository.getAll();
@@ -17,10 +18,11 @@ export const getUsers = async (req, res) => {
     }
 }
 
+// Obtener usuario por id
 export const getUserById = async (req, res) => {
     try {
-        const { id } = req.params;
-        const user = await userRepository.getById(id);
+        const userId = req.params.id;
+        const user = await userRepository.getById(userId);
         if (user.error) {
             return res.notFound(user.error);
         }
@@ -30,11 +32,12 @@ export const getUserById = async (req, res) => {
     }
 };
 
+// Actualizar usuario
 export const updateUser = async (req, res) => {
     try {
-        const { id } = req.params;
+        const userId = req.params.id;
         const updateData = req.body;
-        const updatedUser = await userRepository.update(id, updateData);
+        const updatedUser = await userRepository.update(userId, updateData);
         if (updatedUser.error) {
             return res.notFound(updatedUser.error);
         }
@@ -44,28 +47,35 @@ export const updateUser = async (req, res) => {
     }
 };
 
+// Eliminar usuario
 export const deleteUser = async (req, res) => {
     try {
-        const { id } = req.params;
+        const userId = req.params.id;
         // Obtener el usuario para acceder a su carrito
-        const user = await userRepository.getById(id);
+        const user = await userRepository.getById(userId);
         if (!user) {
             return res.notFound('Usuario no encontrado');
         }
-        // Eliminar el carrito asociado al usuario, si existe
+        // Si el usuario tiene un carrito, verificar si existe antes de eliminarlo
         if (user.cart) {
-            const cartDeleted = await cartRepository.delete(user.cart);
-            if (!cartDeleted) {
-                return res.errorServer('Error al eliminar el carrito del usuario');
+            const cart = await cartRepository.getById(user.cart);
+            if (cart) {
+                const cartDeleted = await cartRepository.delete(user.cart);
+                if (!cartDeleted) {
+                    return res.errorServer('Error al eliminar el carrito del usuario');
+                }
             }
         }
-        const deletedUser = await userRepository.deleteUser(id);
+        // Eliminar el usuario
+        const deletedUser = await userRepository.deleteUser(userId);
         return res.success({ message: 'Usuario eliminado', user: deletedUser });
     } catch (e) {
         return res.errorServer({ message: e.message });
     }
 };
 
+
+// Logear usuario con el email y contraseña
 export const login = async (req, res) => {
     try {
         const { password, email } = req.body;
@@ -106,6 +116,7 @@ export const login = async (req, res) => {
     }
 };
 
+// Registrar usuario
 export const register = async (req, res) => {
     try {
         const { first_name, last_name, email, age, rol, password } = req.body;
@@ -128,6 +139,7 @@ export const register = async (req, res) => {
     }
 };
 
+// Actualizar contraseña del usuario
 export const updatePassword = async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -142,6 +154,7 @@ export const updatePassword = async (req, res) => {
     }
 };
 
+//Verificar usuario logeado
 export const currentUser = async (req, res) => {
     try {
         if (!req.user) {
@@ -154,6 +167,7 @@ export const currentUser = async (req, res) => {
     }
 };
 
+//Deslogear ususario
 export const logoutUser = (req, res) => {
     try {
         res.clearCookie('currentUser');

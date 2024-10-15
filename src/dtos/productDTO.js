@@ -1,4 +1,4 @@
-class ProductDTO {
+export default class ProductDTO {
     constructor(product) {
         this.id = product._id.toString();
         this.title = product.title;
@@ -11,5 +11,3 @@ class ProductDTO {
         this.thumbnails = product.thumbnails;
     }
 }
-
-export default ProductDTO;

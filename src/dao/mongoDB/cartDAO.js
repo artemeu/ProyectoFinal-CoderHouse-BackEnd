@@ -10,7 +10,8 @@ export default class CartDAO extends GenericDAO {
     // Método para obtener todos los carritos con populate
     async getAll() {
         try {
-            return await this.model.find().populate('products.product');
+            const carts = await this.model.find().populate('products.product');
+            return carts;
         } catch (error) {
             throw new Error(`Error al obtener los carritos: ${error.message}`);
         }
@@ -30,7 +31,6 @@ export default class CartDAO extends GenericDAO {
         try {
             const cart = await this.getById(cartId);
             if (!cart) throw new Error(`Carrito con ID ${cartId} no encontrado`);
-
             // Buscar si el producto ya está en el carrito
             const productIndex = cart.products.findIndex(p => p.product.id === productId);
             if (productIndex !== -1) {
@@ -50,8 +50,14 @@ export default class CartDAO extends GenericDAO {
     // Método para eliminar un producto del carrito
     async removeProductFromCart(cartId, productId) {
         try {
+            // Obtener el carrito por ID
             const cart = await this.getById(cartId);
             if (!cart) throw new Error(`Carrito con ID ${cartId} no encontrado`);
+            // Verificar si el producto está en el carrito
+            const productInCart = cart.products.some(p => p.product.id === productId);
+            if (!productInCart) {
+                throw new Error(`Producto con ID ${productId} no encontrado en el carrito`);
+            }
             cart.products = cart.products.filter(p => p.product.id !== productId);
             await cart.save();
             return cart;
@@ -59,6 +65,7 @@ export default class CartDAO extends GenericDAO {
             throw new Error(`Error al eliminar el producto del carrito: ${error.message}`);
         }
     }
+
 
     // Método para actualizar productos en el carrito
     async updateCartProducts(cartId, products) {

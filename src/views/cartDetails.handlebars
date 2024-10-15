@@ -1,4 +1,4 @@
-<header></header>
+<header>
 <div class="header-content">
   {{#if currentUser}}
     <p class="welcome-message">Bienvenido, {{currentUser.first_name}}!</p>
@@ -22,14 +22,19 @@
         </li>
       {{/each}}
     </ul>
+    <div class="cart-total"></div>
+      <h3>Total: ${{total}}</h3>
+    </div>
   {{else}}
     <p>El carrito está vacío.</p>
   {{/if}}
 </div>
 
-<div class="cart-actions">
-  <button id="clear-cart-btn" onclick="clearCart('{{cart.id}}')">Vaciar Carrito</button>
-</div>
+{{#if cart.products.length}}
+  <div class="cart-actions">
+    <button id="clear-cart-btn" onclick="clearCart('{{cart.id}}')">Vaciar Carrito</button>
+  </div>
+{{/if}}
 
 <a href="/products" class="back-link">Volver a la página principal</a>
 

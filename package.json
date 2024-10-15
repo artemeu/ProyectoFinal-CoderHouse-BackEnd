@@ -1,7 +1,7 @@
 {
   "name": "proyecto-final",
   "version": "1.0.0",
-  "description": "",
+  "description": "Aplicación web de ecommerce utilizando Node.js, Express y MongoDB. Se puede manejar tanto productos, carritos y usuarios",
   "type": "module",
   "main": "/src/app.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "start:dev": "nodemon ./src/app.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Artem Pylypenko",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -21,7 +21,6 @@
     "mongodb": "^6.8.0",
     "mongoose": "^8.5.2",
     "mongoose-paginate-v2": "^1.8.3",
-    "multer": "^1.4.5-lts.1",
     "nodemon": "^3.1.4",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",

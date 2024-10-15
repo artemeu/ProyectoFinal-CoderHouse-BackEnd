@@ -6,7 +6,8 @@ export default class GenericDAO {
     // Método para obtener todos los documentos
     async getAll() {
         try {
-            return await this.model.find();
+            const documents = await this.model.find();
+            return documents
         } catch (error) {
             throw new Error(`Error al obtener los documentos: ${error.message}`);
         }

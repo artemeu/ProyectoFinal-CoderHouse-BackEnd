@@ -107,18 +107,22 @@ export const cartDetail = async (req, res) => {
                 quantity: p.quantity
             }))
         };
+        // Calcular el total del carrito sumando el precio por cantidad de cada producto
+        const total = cleanCart.products.reduce((sum, item) => {
+            return sum + (item.product.price * item.quantity);
+        }, 0);
         const currentUser = req.user ? req.user : null;
         res.render('cartDetails', {
             title: 'Detalles del Carrito',
             cart: cleanCart,
             currentUser,
+            total,
             css: '/css/cart.css'
         });
     } catch (error) {
         res.errorServer(error.message);
     }
 }
-
 
 export const userLogin = async (req, res) => {
     res.render('login', { title: "Login" });

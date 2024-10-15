@@ -19,7 +19,7 @@ export default class UserRepository extends GenericRepository {
     async deleteUser(userId) {
         try {
             const deletedUser = await this.dao.delete(userId);
-            return deletedUser ? new this.dto(deletedUser, false) : null;
+            return deletedUser ? new this.dto(deletedUser) : null;
         } catch (error) {
             throw new Error(`Error al eliminar el usuario: ${error.message}`);
         }
@@ -28,7 +28,7 @@ export default class UserRepository extends GenericRepository {
     async getCurrentUserById(userId) {
         try {
             const user = await this.dao.getById(userId);
-            return user ? new this.dto(user, false) : null;
+            return user ? new this.dto(user) : null;
         } catch (error) {
             throw new Error(`Error al obtener el usuario actual: ${error.message}`);
         }

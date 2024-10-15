@@ -11,7 +11,8 @@ export default class CustomRouter {
         return this.router;
     }
 
-    init() { }
+    init() {
+    }
 
     get(path, policies = [], ...cb) {
         this.router.get(path, this.customResponses, this.handlePolicies(policies), this.applyCallbacks(cb));
@@ -74,5 +75,4 @@ export default class CustomRouter {
             }
         };
     }
-
 }

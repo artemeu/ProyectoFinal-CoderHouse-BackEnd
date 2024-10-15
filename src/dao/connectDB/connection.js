@@ -14,6 +14,10 @@ export default class ConnectToDB {
         }
         const mongoUri = process.env.MONGODB_URI;
         const nameBD = process.env.USE_DB;
+        if (!mongoUri || !nameBD) {
+            console.error('Faltan variables de entorno MONGODB_URI o USE_DB');
+            process.exit(1);
+        }
         try {
             // Establecer la conexión a la base de datos
             this.#instance = await mongoose.connect(mongoUri, { dbName: nameBD });

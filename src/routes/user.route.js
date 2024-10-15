@@ -11,7 +11,7 @@ class UserRouter extends CustomRouter {
         this.post('/register', [], UserController.register);
         this.post('/login', [], UserController.login);
         this.post('/logout', [], UserController.logoutUser);
-        this.put('/forgotpass', ['authenticated', 'admin', 'user'], UserController.updatePassword);
+        this.put('/forgotpass', [], UserController.updatePassword);
         this.put('/users/:id', ['authenticated', 'admin', 'user'], UserController.updateUser);
         this.delete('/users/:id', ['authenticated', 'admin'], UserController.deleteUser);
     }
