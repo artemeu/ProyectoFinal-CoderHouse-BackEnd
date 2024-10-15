@@ -1,5 +1,15 @@
 # Proyecto Final - CoderHouse - Backend
 
+## Descripción del Proyecto
+
+Este proyecto es un sistema de gestión de productos y usuarios, y carritos de compras, desarrollado como parte del curso final de Backend en CoderHouse. Permite a los usuarios crear carritos, agregar productos, realizar compras, gestionar tickets y usuarios, entre otras cosas. Está diseñado con un enfoque en la RESTful API y utiliza MongoDB como base de datos.
+
+## Requisitos Previos
+
+- Node.js (versión mínima recomendada)
+- MongoDB (instalado y en funcionamiento)
+- npm (instalado)
+
 ## Instalacion
 
 1. Clona este repositorio en tu máquina local:
@@ -52,11 +62,18 @@ Para poder utilizar cada uno de los metodos es necesario que el producto tenga l
 
 #### Para el carrito
 
-| Metodo | Endpoint                                        | Descripcion                                                          |
-| ------ | ----------------------------------------------- | -------------------------------------------------------------------- |
-| GET    | http://localhost:8080/api/carts/:id             | Solicitar el carrito segun su id espesifico                          |
-| POST   | http://localhost:8080/api/carts                 | Crea un carrito con su id especifico                                 |
-| POST   | http://localhost:8080/api/carts/:id/product/:id | Agrega un producto especifico con su id al carrito que tiene otro id |
+| Método | Endpoint                                         | Descripción                                                 |
+| ------ | ------------------------------------------------ | ----------------------------------------------------------- |
+| GET    | http://localhost:8080/api/carts                  | Solicitar todos los carritos                                |
+| GET    | http://localhost:8080/api/carts/:id              | Solicitar el carrito según su ID específico                 |
+| POST   | http://localhost:8080/api/carts                  | Crear un carrito nuevo                                      |
+| POST   | http://localhost:8080/api/carts/:id/products/:id | Agregar un producto específico al carrito que tiene otro ID |
+| POST   | http://localhost:8080/api/carts/:id/purchase     | Finalizar la compra del carrito                             |
+| PUT    | http://localhost:8080/api/carts/:id              | Actualizar el carrito con un array de productos             |
+| PUT    | http://localhost:8080/api/carts/:id/products/:id | Actualizar la cantidad del producto en el carrito           |
+| DELETE | http://localhost:8080/api/carts/:id              | Eliminar todos los productos del carrito                    |
+| DELETE | http://localhost:8080/api/carts/:id/products/:id | Eliminar un producto específico del carrito                 |
+| DELETE | http://localhost:8080/api/carts/:id/empty        | Vaciar el carrito especifico                                |
 
 #### Para los usuarios
 
@@ -82,6 +99,16 @@ Para registrar un nuevo usuario, el JSON debe incluir
 "rol":
 "password":
 }
+
+#### Para los Tickets
+
+| Método | Endpoint                              | Descripción                 |
+| ------ | ------------------------------------- | --------------------------- |
+| GET    | http://localhost:8080/api/tickets     | Solicitar todos los tickets |
+| GET    | http://localhost:8080/api/tickets/:id | Solicitar ticket por ID     |
+| POST   | http://localhost:8080/api/tickets     | Crear un nuevo ticket       |
+| PUT    | http://localhost:8080/api/tickets/:id | Actualizar un ticket por ID |
+| DELETE | http://localhost:8080/api/tickets/:id | Eliminar un ticket por ID   |
 
 ### Visualización de Productos
 
