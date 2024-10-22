@@ -31,3 +31,12 @@ export const generadorToken = (user) => {
     const token = jwt.sign(user, process.env.SECRET, { expiresIn: '24h' })
     return token
 };
+
+export const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('es-AR', {
+        style: 'currency',
+        currency: 'ARS',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(amount);
+};

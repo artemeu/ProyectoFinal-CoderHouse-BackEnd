@@ -2,7 +2,8 @@ import CartRepository from "../repositories/cartRepository.js";
 import ProductRepository from "../repositories/productRepository.js";
 import UserRepository from "../repositories/userRepository.js";
 import TicketRepository from '../repositories/ticketRepository.js';
-import { generadorToken } from "../utils/utils.js";
+import { formatCurrency, generadorToken } from "../utils/utils.js";
+import { sendEmail } from "../services/emailService.js";
 
 const cartRepository = new CartRepository();
 const productRepository = new ProductRepository();
@@ -178,6 +179,21 @@ export const purchaseCart = async (req, res) => {
         if (itemsToBuy.length > 0) {
             const totalAmount = itemsToBuy.reduce((total, item) => total + item.price * item.quantity, 0);
             await ticketRepository.create({ amount: totalAmount, purchaser: userEmail, products: itemsToBuy });
+
+            const formattedTotal = formatCurrency(totalAmount);
+            // Crear contenido HTML para el correo
+            const subject = 'Confirmación de compra';
+            const htmlContent = `
+                <h1>Gracias por tu compra, ${user.first_name}!</h1>
+                <p>Has comprado los siguientes productos:</p>
+                <ul>
+                    ${itemsToBuy.map(item => `<li>${item.title}: ${item.quantity} unidades</li>`).join('')}
+                </ul>
+                <p>Total de la compra: <strong>${formattedTotal}</strong></p>
+            `;
+
+            // Enviar correo de confirmación
+            await sendEmail(userEmail, subject, htmlContent);
         }
         // Actualizar el carrito con los productos restantes
         await cartRepository.update(cartId, {
